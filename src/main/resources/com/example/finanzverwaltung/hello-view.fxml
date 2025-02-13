@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: silver;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finanzverwaltung.Controller">
+   <children>
+      <VBox alignment="TOP_CENTER" layoutX="185.0" layoutY="58.0" prefHeight="137.0" prefWidth="180.0" spacing="10.0">
+         <children>
+            <Label text="Aktueller Kontostand" />
+            <TextField fx:id="outputKontostand" editable="false" />
+            <Button fx:id="btnLoad" mnemonicParsing="false" onAction="#btnLoad_Click" text="Kontostand laden" />
+            <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSave_Click" text="Kontostand speichern" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </VBox>
+      <HBox layoutX="201.0" layoutY="278.0" prefHeight="47.0" prefWidth="149.0" spacing="10.0">
+         <children>
+            <Button fx:id="btnDown" mnemonicParsing="false" onAction="#btnDown_Click" style="-fx-background-color: red;" text="abziehen" />
+            <Button fx:id="btnUP" mnemonicParsing="false" onAction="#btnUp_Click" style="-fx-background-color: green;" text="erhöhen" />
+         </children>
+         <padding>
+            <Insets left="10.0" top="15.0" />
+         </padding>
+      </HBox>
+      <VBox alignment="TOP_CENTER" layoutX="194.0" layoutY="224.0" prefHeight="47.0" prefWidth="164.0">
+         <children>
+            <Label text="Betrag" />
+            <TextField fx:id="inputBetrag" />
+         </children>
+      </VBox>
+      <Button fx:id="btnClose" layoutX="215.0" layoutY="346.0" mnemonicParsing="false" onAction="#btnClose_Click" text="Programm beenden" />
+      <ListView fx:id="aktionenView" layoutX="377.0" layoutY="86.0" prefHeight="200.0" prefWidth="200.0" />
+   </children>
+</AnchorPane>
