@@ -134,7 +134,7 @@ public class Controller implements Initializable {
 
                     }
                 }else {
-                    addAktion("Erhöhung: " + betrag + " €");
+                    addAktion("Abzug: " + betrag + " €");
                     aktionenView.getItems().addAll();
                     setUnsavedChanges(true);
                 }
