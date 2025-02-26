@@ -14,24 +14,29 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-
 import javafx.scene.control.Alert.AlertType;
 
 
 
 public class Controller implements Initializable {
 
+    // Speichert den aktuellen Kontostand.
     private double kontostand;
+
+    // Flag, das angibt, ob ungespeicherte Änderungen vorliegen.
     private boolean unsavedChanges = false;
+
+    // Zählt die Anzahl der Aktionen, um die Listview zu begrenzen.
     private int actionCount = 0;
 
-
+    // FXML-Ressourcen und Location.
     @FXML
     private ResourceBundle resources;
 
     @FXML
     private URL location;
 
+    // FXML-Elemente (Buttons, Textfelder usw. die mit der FXML-Datei verbunden sind.
     @FXML
     private Button btnClose;
 
@@ -56,6 +61,10 @@ public class Controller implements Initializable {
     @FXML
     private ListView<String> aktionenView;
 
+    /**
+     * Fügt eine Aktion zur ListView hinzu und begrenzt die Anzahl der Einträge auf 5
+     * @param aktion die hinzugefügt werden soll.
+     */
     public void addAktion(String aktion) {
             aktionenView.getItems().add(aktion);
             actionCount++;
@@ -67,11 +76,17 @@ public class Controller implements Initializable {
             }
     }
 
-
+    /**
+     * Setzt das Flag für ungespeicherte Änderungen.
+     * @param hasUnsavedChanges True, wenn ungespeicherte Änderungen vorliegen, ansonsten False.
+     */
     public void setUnsavedChanges(boolean hasUnsavedChanges) {
         this.unsavedChanges = hasUnsavedChanges;
     }
 
+    /**
+     * Speichert den aktuellen Kontostand in der Datei "kontostand.txt".
+     */
     public void saveChanges() {
         try {
             FileWriter writer = new FileWriter("kontostand.txt");
@@ -85,9 +100,11 @@ public class Controller implements Initializable {
         }
     }
 
-
-
-
+    /**
+     * Behandelt den klick auf dem "btnClose"- Button.
+     * Fragt nach, ob ungespeicherte Änderungen gespeichert werden sollen, bevor die Anwendung geschlossen wird.
+     * @param event ActionEvent
+     */
     @FXML
     public void btnClose_Click(ActionEvent event) {
         if (unsavedChanges) {
@@ -102,17 +119,22 @@ public class Controller implements Initializable {
 
             Optional<ButtonType> result = confirmationDialog.showAndWait();
             if (result.get() == buttonTypeYes) {
-                saveChanges();
-                System.exit(0);
+                saveChanges(); // Speichert die Änderungen
+                System.exit(0); // Beendet die Anwendung.
 
 
             }
         } else {
-            System.exit(0);
+            System.exit(0); // Beendet die Anwendung, wenn keine ungespeicherten Änderungen vorliegen.
         }
 
     }
 
+    /**
+     * Behandelt den klick auf dem "btnDown"- Button.
+     * Zieht den eingegebenen Betrag vom Kontostand ab und aktualisiert die Benutzeroberfläche.
+     * @param event
+     */
     @FXML
     public void btnDown_Click(ActionEvent event) {
 
@@ -121,6 +143,7 @@ public class Controller implements Initializable {
                 kontostand -= betrag;
                 outputKontostand.setText(String.format("%.2f", kontostand));
 
+                // Zeigt eine Warnung an, wenn der Kontostand unter 500 Euro fällt
                 if (kontostand < 500) {
                     Alert confirmationDialog = new Alert(AlertType.CONFIRMATION);
                     confirmationDialog.setTitle("Achtung!");
@@ -130,13 +153,13 @@ public class Controller implements Initializable {
                     ButtonType buttonTypeOk = new ButtonType("Ok");
                     Optional<ButtonType> result = confirmationDialog.showAndWait();
                     if (result.get() == buttonTypeOk) {
-                        setUnsavedChanges(true);
+                        setUnsavedChanges(true); // Markiert Änderungen als ungespeichert.
 
                     }
                 }else {
-                    addAktion("Abzug: " + betrag + " €");
-                    aktionenView.getItems().addAll();
-                    setUnsavedChanges(true);
+                    addAktion("Abzug: " + betrag + " €"); // Fügt die Aktion zur ListView hinzu.
+                    aktionenView.getItems().addAll(); // Aktualisiert die ListView.
+                    setUnsavedChanges(true); // Hier werden Änderungen als ungespeichert Markiert.
                 }
 
 
@@ -145,33 +168,40 @@ public class Controller implements Initializable {
             }
         }
 
+    /**
+     * Behandelt den "btnSave"- Button.
+     * Speichert den aktuellen Kontostand und setzt das Flag für ungesicherte Änderungen zurück.
+     * @param event
+     */
     @FXML
     public void btnSave_Click(ActionEvent event) {
-        try {
-            FileWriter writer = new FileWriter("kontostand.txt");
-            writer.write(String.valueOf(kontostand));
-            writer.close();
-            System.out.println("Kontostand gespeichert.");
-            setUnsavedChanges(false);
-        } catch (IOException e) {
-            System.out.println("Fehler beim Speichern: " + e.getMessage());
-        }
+        saveChanges(); // Speichert die Änderungen.
+        setUnsavedChanges(false); // Setzt das Flag zurück.
     }
 
+    /**
+     * Behandelt den Klick auf den "btnUP"-Button.
+     * Addiert den eingegebenen Betrag zum Kontostand und aktualisiert die Benutzeroberfläche.
+     *
+     * @param event
+     */
     @FXML
     public void btnUp_Click(ActionEvent event) {
         try {
             double betrag = Double.parseDouble(inputBetrag.getText());
             kontostand += betrag;
             outputKontostand.setText(String.format("%.2f", kontostand));
-            addAktion("Erhöhung: " + betrag + " €");
-            aktionenView.getItems().addAll();
-            setUnsavedChanges(true);
+            addAktion("Erhöhung: " + betrag + " €"); // Fügt die Aktion zur ListView hinzu.
+            aktionenView.getItems().addAll(); // Aktualisiert die ListView.
+            setUnsavedChanges(true); // Markiert Änderungen als ungespeichert.
         } catch (NumberFormatException e) {
             System.out.println("Bitte geben Sie einen gültigen Betrag ein.");
         }
     }
 
+    /**
+     * Lädt den Kontostand aus der Datei "kontostand.txt" und aktualisiert das Textfeld.
+     */
     public void ladeKontostand() {
         try {
             // Lese den Kontostand aus der Datei
@@ -186,11 +216,24 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Behandelt den Klick auf den "Laden"-Button.
+     * Lädt den Kontostand aus der Datei.
+     *
+     * @param event Das ActionEvent.
+     */
     @FXML
     public void btnLoad_Click(ActionEvent event) {
-        ladeKontostand();
+        ladeKontostand(); // Lädt den Kontostand.
     }
 
+    /**
+     * Initialisiert den Controller.
+     * Lädt den Kontostand und aktualisiert die ListView beim Start der Anwendung.
+     *
+     * @param url Die URL des FXML-Dokuments
+     * @param rb  ResourceBundle
+     */
     @FXML
     public void initialize(URL url, ResourceBundle rb) {
         ladeKontostand();
